@@ -1,0 +1,1 @@
+Joey start to relearn react & typescript & redux and so on.
