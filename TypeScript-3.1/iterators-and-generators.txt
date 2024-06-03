@@ -1,0 +1,29 @@
+1. 可迭代性:
+当一个对象实现了Symbol.iterator属性时，我们认为它是可迭代的。 
+一些内置的类型如 Array，Map，Set，String，Int32Array，Uint32Array等都已经实现了各自的Symbol.iterator。 
+对象上的 Symbol.iterator函数负责返回供迭代的值。
+
+2. for..of VS for..in :
+(1). for..of和for..in均可迭代一个列表；但是用于迭代的值却不同，for..in迭代的是对象的 键 的列表，而for..of则迭代对象的键对应的值。
+(2). 另一个区别是for..in可以操作任何对象；它提供了查看对象属性的一种方法。 
+但是 for..of关注于迭代对象的值。内置对象Map和Set已经实现了Symbol.iterator方法，让我们可以访问它们保存的值。
+
+let pets = new Set(["Cat", "Dog", "Hamster"]);
+
+// 虽然JavaScript中的大多数对象（如普通对象{}）允许你添加新的属性，但Set对象并不是为这种用途设计的。
+// 当你尝试给Set对象添加属性时，实际上你是在Set对象的原型链上的某个地方（可能是Object.prototype）添加了属性，而不是直接在Set对象上。
+// 因此，这个属性并不是Set元素的一部分，也不会被Set的迭代器（如for...of循环）所遍历。
+pets["species"] = "mammals";
+
+for (let pet in pets) {
+    console.log(pet); // "species"
+}
+
+for (let pet of pets) {
+    console.log(pet); // "Cat", "Dog", "Hamster"
+}
+Note: 
+Set对象用于存储唯一的值，并且没有与这些值关联的键。
+使用for...of循环来遍历Set对象中的元素。
+避免使用for...in循环来遍历Set对象，因为它可能会遍历到继承的属性，而不是Set中的元素。
+不要试图给Set对象添加属性，因为这不是它们的设计目的。如果你需要关联的数据，可能需要考虑使用Map对象或其他数据结构。

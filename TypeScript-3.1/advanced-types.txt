@@ -1,0 +1,97 @@
+1. typeof类型保护:
+这些* typeof类型保护*只有两种形式能被识别： typeof v === "typename"和 typeof v !== "typename"， 
+"typename"必须是 "number"， "string"， "boolean"或 "symbol"。
+
+2. instanceof类型保护:
+instanceof的右侧要求是一个构造函数，TypeScript将细化为：
+此构造函数的 prototype属性的类型，如果它的类型不为 any的话;
+构造签名所返回的类型的联合;
+
+3. 可以为null的类型:
+默认情况下，类型检查器认为 null与 undefined可以赋值给任何类型。 null与 undefined是所有其它类型的一个有效值。 
+这也意味着，你阻止不了将它们赋值给其它类型，就算是你想要阻止这种情况也不行。
+
+--strictNullChecks标记可以解决此错误：当你声明一个变量时，它不会自动地包含 null或 undefined。 你可以使用联合类型明确的包含它们:
+let s = "foo";
+s = null; // 错误, 'null'不能赋值给'string'
+let sn: string | null = "bar";
+sn = null; // 可以
+sn = undefined; // error, 'undefined'不能赋值给'string | null'
+Note : 按照JavaScript的语义，TypeScript会把 null和 undefined区别对待。 string | null， string | undefined和 string | undefined | null是不同的类型.
+
+4. 可选参数和可选属性:
+使用了 --strictNullChecks，可选参数会被自动地加上 | undefined:
+function f(x: number, y?: number) {
+    return x + (y || 0);
+}
+f(1, 2);
+f(1);
+f(1, undefined);
+f(1, null); // error, 'null' is not assignable to 'number | undefined'
+
+5. 去除null || undefined
+如果编译器不能够去除 null或 undefined，你可以使用类型断言手动去除。 语法是添加 !后缀： identifier!从 identifier的类型里去除了 null和 undefined：
+
+
+6. Type  类型别名:
+类型别名会给一个类型起个新名字。 类型别名有时和接口很像，但是可以作用于原始值，联合类型，元组以及其它任何你需要手写的类型。
+起别名不会新建一个类型 - 它创建了一个新 名字来引用那个类型。 给原始类型起别名通常没什么用，尽管可以做为文档的一种形式使用。
+
+7. 接口 Interface  VS  类型别名 Type 
+像我们提到的，类型别名可以像接口一样；然而，仍有一些细微差别。
+(1). 其一，接口创建了一个新的名字，可以在其它任何地方使用。 类型别名并不创建新名字—比如，错误信息就不会使用别名。 
+(2). 另一个重要区别是类型别名不能被 extends和 implements（自己也不能 extends和 implements其它类型）。
+因为 软件中的对象应该对于扩展是开放的，但是对于修改是封闭的，你应该尽量去使用接口代替类型别名。
+(3). 另一方面，如果你无法通过接口来描述一个类型并且需要使用联合类型或元组类型，这时通常会使用类型别名。
+
+
+8.索引类型和字符串索引签名:
+keyof和 T[K]与字符串索引签名进行交互。 如果你有一个带有字符串索引签名的类型，那么 keyof T会是 string。 并且 T[string]为索引签名的类型：
+interface Map<T> {
+    [key: string]: T;
+}
+let keys: keyof Map<number>; // string
+let value: Map<number>['foo']; // number
+
+9.映射类型：
+type Readonly<T> = {
+    readonly [P in keyof T]: T[P];
+}
+type Partial<T> = {
+    [P in keyof T]?: T[P];
+}
+
+type PersonPartial = Partial<Person>;
+type ReadonlyPerson = Readonly<Person>;
+
+注意 Readonly<T>和 Partial<T>用处不小，因此它们与 Pick和 Record一同被包含进了TypeScript的标准库里：
+type Pick<T, K extends keyof T> = {
+    [P in K]: T[P];
+}
+type Record<K extends string, T> = {
+    [P in K]: T;
+}
+
+Readonly， Partial和 Pick是同态的，但 Record不是。 因为 Record并不需要输入类型来拷贝属性，所以它不属于同态：
+type ThreeStringProps = Record<'prop1' | 'prop2' | 'prop3', string>
+非同态类型本质上会创建新的属性，因此它们不会从它处拷贝属性修饰符。
+
+10. Record: 源码也比较简单，即将K中的每个属性([P in K]),都转为T类型。常用格式：type proxyKType = Record<K,T>
+/**
+ * Construct a type with a set of properties K of type T
+ */
+type Record<K extends keyof any, T> = {
+    [P in K]: T;
+};
+
+11. 预定义的有条件类型:
+TypeScript 2.8在lib.d.ts里增加了一些预定义的有条件类型：
+Exclude<T, U> -- 从T中剔除可以赋值给U的类型。
+Extract<T, U> -- 提取T中可以赋值给U的类型。
+NonNullable<T> -- 从T中剔除null和undefined。
+ReturnType<T> -- 获取函数返回值类型。
+InstanceType<T> -- 获取构造函数类型的实例类型。
+
+Note: 
+Exclude类型是建议的Diff类型的一种实现。我们使用Exclude这个名字是为了避免破坏已经定义了Diff的代码，并且我们感觉这个名字能更好地表达类型的语义。
+我们没有增加Omit<T, K>类型，因为它可以很容易的用Pick<T, Exclude<keyof T, K>>来表示。

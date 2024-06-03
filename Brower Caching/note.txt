@@ -1,0 +1,22 @@
+7~9 years' experience
+Proficient understanding of web markup,including HTML5, CSS3 and connect to the latest ECMA updates;
+Proficient knowledge of JavaScript frameworks, Underlying architecture design and implementation;
+Proficient understanding cross-browser compatibility issues and efficient in fixing all of them;
+Good understanding of SEO principles and tech design ensuring that application will adhere to them;
+Good understanding of Nginx, Docker, k8s.etc;
+Able to lead discussion amount Frontend,Backend and UX and help team reduce risks and understand tech solutions;
+Familiar with Web Security issues and how to protect the website;
+Backend work experience such as J2EE,NodeJS, MicroService;
+Proficient communication amount teams,good presentation skills, stress management.
+
+
+7~9年工作经验:
+精通网页标记，包括HTML5, CSS3和连接到最新的ECMA更新;
+熟练掌握JavaScript框架，底层架构设计与实现;
+精通理解跨浏览器兼容性问题，并有效地解决所有这些问题;
+对SEO原则和技术设计有良好的理解，确保应用程序遵循这些原则;
+熟悉Nginx, Docker, k8s等;
+能够领导前端、后端和用户体验的讨论，帮助团队降低风险，理解技术解决方案;
+熟悉网络安全问题及如何保护网站;
+有J2EE、NodeJS、MicroService等后台工作经验;
+熟练的团队沟通，良好的表达能力，压力管理能力。

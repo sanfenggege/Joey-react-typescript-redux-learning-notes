@@ -1,0 +1,239 @@
+链接：https://juejin.cn/post/7321542773076082699
+
+TypeScript模块解析： https://www.tslang.cn/docs/handbook/module-resolution.html
+
+Typescript： https://www.tslang.cn/docs/handbook/declaration-files/introduction.html
+
+1. 什么是TypeScript中的声明文件（Declaration Files）：
+声明文件（通常以 .d.ts 扩展名结尾）用于描述已有 JavaScript 代码库的类型信息。
+它们提供了类型定义和元数据，以便在 TypeScript 项目中使用这些库时获得智能感知和类型安全。
+
+2. 什么是命名空间（Namespace）和模块（Module）：
+（1）模块：
+在一个大型项目中，可以将相关的代码组织到单独的文件，并使用模块来导入和导出这些文件中的功能。
+在一个 Node.js 项目中，可以使用 import 和 export 关键字来创建模块，从而更好地组织代码并管理依赖关系。
+// greeter.ts
+export function sayHello(name: string) {
+  return `Hello, ${name}!`;
+}
+// app.ts
+import { sayHello } from './greeter';
+console.log(sayHello('John'));
+
+（2）命名空间：
+在面向对象的编程中，命名空间可以用于将具有相似功能或属性的类、接口等进行分组，以避免全局命名冲突。
+这在大型的 JavaScript 或 TypeScript 应用程序中特别有用，可以确保代码结构清晰，并且不会意外地重复定义相同的名称。
+// greeter.ts
+namespace Greetings {
+  export function sayHello(name: string) {
+    return `Hello, ${name}!`;
+  }
+}
+// app.ts
+<reference path="greeter.ts" />
+console.log(Greetings.sayHello('John'));
+
+（3）区别：
+模块提供了一种组织代码的方式，使得我们可以轻松地在多个文件中共享代码，
+命名空间则提供了一种在全局范围内组织代码的方式，防止命名冲突。
+
+（4）引入模式：
+使用模块时，我们可以使用 export 和 import 关键字来定义和引入模块中的函数或变量。
+而在命名空间中，我们使用 namespace 来创建命名空间，并且需要在使用之前使用  <reference path="file.ts" /> 来引入命名空间。
+
+3.  什么是类型断言（Type Assertion）？
+通过类型断言这种方式可以告诉编译器，“相信我，我知道自己在干什么”。 类型断言好比其它语言里的类型转换，但是不进行特殊的数据检查和解构。 
+它没有运行时的影响，只是在编译阶段起作用。 TypeScript会假设你，程序员，已经进行了必须的检查。
+
+两种形式是等价的。 至于使用哪个大多数情况下是凭个人喜好；然而，当你在TypeScript里使用JSX时，只有 as语法断言是被允许的。
+（1）尖括号语法：
+let someValue: any = "this is a string";
+let strLength: number = (<string>someValue).length;
+
+（2）as:
+let someValue: any = "this is a string";
+let strLength: number = (someValue as string).length;
+
+4. 类型守卫（Type Guards）是什么？
+类型守卫是一种用于在运行时检查类型的技术，它允许开发人员在特定的作用域内缩小变量的范围，以确保正确推断类型。
+function isString(test: any): test is string {
+  return typeof test === "string";
+}
+if (isString(input)) {
+  // input 在此代码块中被收窄为 string 类型
+}
+
+5. const和readonly的区别？
+（1）const：
+const用于声明常量值。一旦被赋值后，其值将不能被重新赋值或修改。
+常量必须在声明时就被赋值，并且该值不可改变。
+常量通常用于存储不会发生变化的值，例如数学常数或固定的配置值。
+
+（2）readonly：
+readonly关键字用于标记类的属性，表明该属性只能在类的构造函数或声明时被赋值，并且不能再次被修改。
+readonly属性可以在声明时或构造函数中被赋值，但之后不能再被修改。
+readonly属性通常用于表示对象的某些属性是只读的，防止外部代码修改这些属性的值。
+
+（3）总结来说，const主要用于声明常量值，而readonly则用于标记类的属性使其只读。
+
+6. TypeScript数据类型？
+在TypeScript中，常见的数据类型包括以下几种：
+（1）基本类型：
+number: 表示数字，包括整数和浮点数。
+string: 表示文本字符串。
+boolean: 表示布尔值，即true或false。
+null、undefined: 分别表示null和undefined。
+symbol: 表示唯一的、不可变的值。
+
+（2）复合类型：
+array: 表示数组，可以使用number[]或Array<number>来声明其中元素的类型。
+tuple: 表示元组，用于表示固定数量和类型的数组。
+enum: 表示枚举类型，用于定义具名常量集合。
+
+（3）对象类型：
+object: 表示非原始类型，即除number、string、boolean、symbol、null或undefined之外的类型。
+interface: 用于描述对象的结构，并且可以重复使用。
+
+
+（4）函数类型：
+function: 表示函数类型。
+void: 表示函数没有返回值。
+any: 表示任意类型。
+
+（5）高级类型：
+union types（联合类型）: 表示一个值可以是几种类型之一。
+intersection types（交叉类型）: 表示一个值同时拥有多种类型的特性。
+
+7.  TypeScript中的协变、逆变、双变和抗变是什么？（例子在interface.ts中）
+在TypeScript中，协变（Covariance）、逆变（Contravariance）、双变（Bivariance）和抗变（Invariance 是与类型相关的概念，涉及到参数类型的子类型关系。下面对这些概念进行解释，并提供示例代码。
+（1）协变（Covariance）：协变表示类型T的子类型可以赋值给类型U，当且仅当T是U的子类型。
+区别：协变意味着子类型可以赋值给父类型。
+应用场景：数组类型是协变的，因此可以将子类型的数组赋值给父类型的数组。
+
+（2）逆变（Contravariance）：逆变表示类型T的超类型可以赋值给类型U，当且仅当T是U的子类型。
+区别：逆变意味着超类型可以赋值给子类型。
+应用场景：函数参数类型是逆变的，因此可以将超类型的函数赋值给子类型的函数。
+
+（3）双变（Bivariance）：双变允许参数类型既是协变又是逆变的。
+区别：双变允许参数类型既是协变又是逆变的。
+应用场景：对象类型是双变的，这意味着可以将子类型的对象赋值给父类型的对象，同时也可以将超类型的对象赋值给子类型的对象。
+
+（4）抗变（Invariance）：抗变表示不允许类型T和U之间的任何赋值关系，即T既不是U的子类型，也不是U的超类型。
+区别：抗变表示不允许类型之间的任何赋值关系。
+应用场景：通常情况下，基本类型和类类型是抗变的。
+
+8. 什么是装饰器，有什么作用，如何在TypeScript中使用类装饰器？
+装饰器是一种特殊类型的声明，可以附加到类、方法、访问符、属性或参数上，以修改其行为。
+在 TypeScript 中，装饰器提供了一种在声明时定义如何处理类的方法、属性或参数的机制。
+function classDecorator<T extends { new(...args: any[]): {} }>(constructor: T) {
+  return class extends constructor {
+    newProperty = "new property";
+    hello = "override";
+  };
+}
+
+@classDecorator
+class Greeter {
+  property = "property";
+  hello: string;
+  constructor(m: string) {
+    this.hello = m;
+  }
+}
+console.log(new Greeter("world")); // 输出 { property: 'property', hello: 'override', newProperty: 'new property' }
+
+9. 类装饰器和方法装饰器的执行顺序是怎样的？
+当多个装饰器应用在一个声明上时会进行如下步骤的操作：
+(1).由上至下依次对装饰器表达式求值。
+(2).求值的结果会被当作函数，由下至上依次调用。
+例如：
+function f() {
+    console.log("f(): evaluated");
+    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+        console.log("f(): called");
+    }
+}
+
+function g() {
+    console.log("g(): evaluated");
+    return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+        console.log("g(): called");
+    }
+}
+
+class C {
+    @f()
+    @g()
+    method() {}
+}
+// 打印结果： 
+f(): evaluated
+g(): evaluated
+g(): called
+f(): called
+
+对于方法装饰器，从顶层方法开始依次向下 递归调用方法装饰器函数。
+
+装饰器求值：
+类中不同声明上的装饰器将按以下规定的顺序应用：
+参数装饰器，然后依次是方法装饰器，访问符装饰器，或属性装饰器应用到每个实例成员。
+参数装饰器，然后依次是方法装饰器，访问符装饰器，或属性装饰器应用到每个静态成员。
+参数装饰器应用到构造函数。
+类装饰器应用到类。
+
+10. tsconfig.json有什么作用？
+https://www.tslang.cn/docs/handbook/tsconfig-json.html
+常用配置：
+{
+  /*
+      tsconfig.json是ts编译器的配置文件，ts可以根据它的信息来对代码进行编译 可以再tsconfig中写注释
+      include : 用来指定哪些文件需要被编译
+      exclude : 用来指定哪些文件不需要被编译 ：默认node_module
+      extends : 用来指定继承的配置文件
+      files   : 用来指定被编译的文件列表，只有编译少量文件才使用
+      compilerOptions : 编译器的选项是配置文件中非常重要也是非常复杂的配置选项
+  */
+}
+
+11. TS中什么是方法重载？
+方法重载是指在一个类中定义多个同名的方法，但要求每个方法具有不同的参数的类型或参数的个数。 基本上，它在派生类或子类中重新定义了基类方法。
+方法覆盖规则：
+该方法必须与父类中的名称相同。
+它必须具有与父类相同的参数。
+必须存在IS-A关系或继承。
+
+12. 什么是TypeScript映射文件？
+TypeScript Map文件是一个源映射文件，其中包含有关我们原始文件的信息。
+.map文件是源映射文件，可让工具在发出的JavaScript代码和创建它的TypeScript源文件之间进行映射。
+许多调试器可以使用这些文件，因此我们可以调试TypeScript文件而不是JavaScript文件。
+
+
+13. readonly VS const ？？
+最简单判断该用readonly还是const的方法是看要把它做为变量使用还是做为一个属性。 做为变量使用的话用 const，若做为属性则使用readonly。
+const用于变量，readonly用于属性;
+const在运行时检查，readonly在编译时检查;
+使用const变量保存的数组，可以使用push，pop等方法。但是如果使用Readonly Array声明的数组不能使用push，pop等方法.
+
+14. Omit 类型有什么作用?
+Omit 以一个类型为基础支持剔除某些属性，然后返回一个新类型。 语法如下: Omit<Type, Keys>
+Omit<T, K> === Pick<T, Exclude<keyof T, K>>
+
+
+15. 预定义的有条件类型?
+TypeScript 2.8在lib.d.ts里增加了一些预定义的有条件类型：
+Exclude<T, U> -- 从T中剔除可以赋值给U的类型。
+Extract<T, U> -- 提取T中可以赋值给U的类型。
+NonNullable<T> -- 从T中剔除null和undefined。
+ReturnType<T> -- 获取函数返回值类型。
+InstanceType<T> -- 获取构造函数类型的实例类型。
+
+Note: 
+Exclude类型是建议的Diff类型的一种实现。我们使用Exclude这个名字是为了避免破坏已经定义了Diff的代码，并且我们感觉这个名字能更好地表达类型的语义。
+我们没有增加Omit<T, K>类型，因为它可以很容易的用Pick<T, Exclude<keyof T, K>>来表示。
+
+
+
+
+
+
+
