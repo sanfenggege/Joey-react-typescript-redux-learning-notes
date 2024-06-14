@@ -17,7 +17,7 @@ const useCustomTimer = (initialValue: number) => {
       setTimerStatus('running');
       timerRef.current = setTimeout(() => {
         if (timerValue > 1) {
-          setTimerValue((prev) => prev - 1);
+          setTimerValue(prev => prev - 1);
           startTimer(); // 递归调用以确保定时器持续运行  
         } else {
           setTimerValue(0);
@@ -30,7 +30,7 @@ const useCustomTimer = (initialValue: number) => {
   // 暂停定时器  
   const pauseTimer = useCallback(() => {
     if (timerStatus === 'running') {
-      clearTimeout(timerRef.current!); // 清除定时器  
+      clearTimeout(timerRef.current!); // 清除定时器
       setTimerStatus('paused');
     }
   }, [timerStatus]);
